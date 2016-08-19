@@ -1,0 +1,5 @@
+*.pyc
+/komachi/dist/
+/komachi/build/
+/*.egg-info
+*.json
