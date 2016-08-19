@@ -1,6 +1,6 @@
 # komachi
 
-komachi は読売新聞社より提供されている[発言小町]('http://komachi.yomiuri.co.jp/')のトピックスを収集し、`json`形式で出力するスクリプトです。
+komachi は読売新聞社より提供されている[発言小町](http://komachi.yomiuri.co.jp/)のトピックスを収集し、`json`形式で出力するスクリプトです。
 
 ## インストール
 
@@ -13,8 +13,8 @@ $ python setup.py install
 ## 依存パッケージ
 
 * Python 2.6, 2.7, 3.3, 3.4 or 3.5
-* [Beafutiful Soup 4]('https://www.crummy.com/software/BeautifulSoup/bs4/doc')
-* [lxml]('http://lxml.de/')
+* [Beafutiful Soup 4](https://www.crummy.com/software/BeautifulSoup/bs4/doc)
+* [lxml](http://lxml.de/)
 
 ## ジャンル一覧
 
