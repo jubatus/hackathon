@@ -5,7 +5,7 @@ komachi は読売新聞社より提供されている[発言小町](http://komac
 ## インストール
 
 ```
-$ git clone https://github.com/jubatus/hackason.git
+$ git clone https://github.com/jubatus/hackathon.git
 $ cd hackason/komachi
 $ python setup.py install
 ```
