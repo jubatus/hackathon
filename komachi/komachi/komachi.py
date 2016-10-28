@@ -60,8 +60,9 @@ def parse_title_page(group_id, page_id):
 
 def parse_titles_in_group(group_id):
     result = []
-    for page_id in PAGE_IDS:
+    for i, page_id in enumerate(PAGE_IDS):
         ret = parse_title_page(group_id, page_id)
+        print('parse {0}/{1}'.format(i, len(PAGE_IDS)))
         result.extend(ret)
     return result
 
@@ -69,6 +70,7 @@ def parse_titles_in_group(group_id):
 def parse_titles():
     result = dict()
     for group_id, group_name in GROUPS.items():
+        print('parse', group_name)
         ret = parse_titles_in_group(group_id)
         result[group_name] = ret
     return result
@@ -106,5 +108,6 @@ def parse_contents(url):
         result['votes'] = votes
         return result
     except Exception as e:
-        print('ERROR: ', e)
+        import traceback
+        traceback.print_exc()
         return None
