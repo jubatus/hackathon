@@ -61,6 +61,7 @@ with open('contents.json', 'w') as f:
 
 ```json:contents.json
 {
+    "topic_id",                 # トピックID
     "user_name": "USERNAME",    # ユーザ名
     "user_id": "USER ID",       # ユーザID
     "title": "TITLE",           # 投稿のタイトル
@@ -71,6 +72,7 @@ with open('contents.json', 'w') as f:
     "date": "2016年m月d日 H:M",  # 投稿日・時間
     "n_favorite": "0",          # お気に入りの数
     "face": "kao***",           # 感情アイコンID
+    "votes": [],                # 得票数
     "url": "http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=**",
 }
 ```
