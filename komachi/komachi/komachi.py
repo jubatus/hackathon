@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import sys
 import re
 from bs4 import BeautifulSoup
@@ -10,20 +11,21 @@ else:
 
 BASE_URL = 'http://komachi.yomiuri.co.jp'
 
-GROUPS = {'00': '全ジャンル一覧',
-          '01': '生活・身近な話題',
-          '02': '恋愛・結婚・離婚',
-          '03': '妊娠・出産・育児',
-          '04': 'キャリア・職場',
-          '05': '家族・友人・人間関係',
-          '06': '心や体の悩み',
-          '07': '美容・ファッション・ダイエット',
-          '08': '趣味・教育・教養',
-          '09': '旅行・国内外の地域情報',
-          '10': '男性から発信するトピ',
-          '11': '編集部からのトピ',
-          '15': '弁護士に相談するトピ'
-          }
+GROUPS = {
+    '00': '全ジャンル一覧',
+    '01': '生活・身近な話題',
+    '02': '恋愛・結婚・離婚',
+    '03': '妊娠・出産・育児',
+    '04': 'キャリア・職場',
+    '05': '家族・友人・人間関係',
+    '06': '心や体の悩み',
+    '07': '美容・ファッション・ダイエット',
+    '08': '趣味・教育・教養',
+    '09': '旅行・国内外の地域情報',
+    '10': '男性から発信するトピ',
+    '11': '編集部からのトピ',
+    '15': '弁護士に相談するトピ'
+}
 
 PAGE_IDS = [str(i) for i in range(1, 10)]
 
@@ -33,6 +35,7 @@ def __html(url):
         return urllib.request.urlopen(url).read()
     else:
         return urllib2.urlopen(url).read()
+
 
 def parse_title_page(group_id, page_id):
     url = '{0}?g={1}&o=0&p={2}'.format(BASE_URL, group_id, page_id)
@@ -77,26 +80,31 @@ def parse_contents(url):
         for e in soup.findAll('br'):
             e.extract()
         result = dict()
+        topic_id = url.split('/')[-1].split('.')[0]
         result['url'] = url
+        result['topic_id'] = topic_id
         result['group'] = soup.find('div', class_='nav-bread2').find_all('a')[-1].text
         result['title'] = soup.find('td', class_='hd').h1.contents[1]
         contents = soup.find('td', class_='m')
-        result['message'] = contents.find('p').text
-        result['user_id'] = contents.find('div', class_='uid-t').contents[0].replace('ユーザーID：', "")
+        result['message'] = contents.find('p').text.replace('\n', '').replace('\r', '')
+        result['user_id'] = contents.find('div', class_='uid-t').contents[0].replace('ユーザーID：', '').replace(' ', '')
         result['user_name'] = soup.find('div', class_=re.compile('kao*')).text
         result['face'] = soup.find('div', class_=re.compile('kao...')).get('class')[0]
         result['date'] = soup.find('td', class_='date').contents[1]
         result['n_favorite'] = soup.find('div', class_='additional-info').find('strong', class_=re.compile('fav*')).text
-        result['n_response'] = soup.find('div', class_='hm').text.replace('レス数：', "").replace('本', "")
+        result['n_response'] = soup.find('div', class_='hm').text.replace('レス数：', '').replace('本', '')
         result['responses'] = []
-        responses = soup.find('table', class_='reslist').find_all('div', class_='inr')
-        for response in responses:
-            ret = dict()
-            ret['res_userid'] = response.find('div', class_='uid-r').text.replace('ユーザーID：', "")
-            ret['res_message'] = response.find('p').text
-            result['responses'].append(ret)
+        reslist = soup.find('table', class_='reslist').find_all('div', class_='inr')
+        for response in reslist:
+            res = dict()
+            res['res_userid'] = response.find('div', class_='uid-r').text.replace('ユーザーID：', '')
+            res['res_message'] = response.find('p').text.replace('\n', '').replace('\r', '')
+            result['responses'].append(res)
+        vote_url = 'http://komachi.yomiuri.co.jp/servlet/GetVoteResult?topic={}&rescategory=1.2.3.4.5'.format(topic_id)
+        vote_soup = BeautifulSoup(__html(vote_url), 'lxml')
+        votes = json.loads(vote_soup.find('p').text)['result']
+        result['votes'] = votes
         return result
     except Exception as e:
         print('ERROR: ', e)
         return None
-
