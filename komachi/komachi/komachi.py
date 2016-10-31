@@ -8,7 +8,9 @@ if sys.version_info > (3, 0):
     import urllib.request
 else:
     import urllib2
-
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+ 
 BASE_URL = 'http://komachi.yomiuri.co.jp'
 
 GROUPS = {
@@ -62,7 +64,7 @@ def parse_titles_in_group(group_id):
     result = []
     for i, page_id in enumerate(PAGE_IDS):
         ret = parse_title_page(group_id, page_id)
-        print('parse {0}/{1}'.format(i, len(PAGE_IDS)))
+        print('get titles at page {0}/{1}'.format(i+1, len(PAGE_IDS)))
         result.extend(ret)
     return result
 
@@ -70,7 +72,7 @@ def parse_titles_in_group(group_id):
 def parse_titles():
     result = dict()
     for group_id, group_name in GROUPS.items():
-        print('parse', group_name)
+        print('group {0}'.format(group_name))
         ret = parse_titles_in_group(group_id)
         result[group_name] = ret
     return result
@@ -83,10 +85,12 @@ def parse_contents(url):
             e.extract()
         result = dict()
         topic_id = url.split('/')[-1].split('.')[0]
+        title = soup.find('td', class_='hd').h1.contents[1]
+        print('scraping {0}: {1}'.format(topic_id, title))
         result['url'] = url
         result['topic_id'] = topic_id
+        result['title'] = title
         result['group'] = soup.find('div', class_='nav-bread2').find_all('a')[-1].text
-        result['title'] = soup.find('td', class_='hd').h1.contents[1]
         contents = soup.find('td', class_='m')
         result['message'] = contents.find('p').text.replace('\n', '').replace('\r', '')
         result['user_id'] = contents.find('div', class_='uid-t').contents[0].replace('ユーザーID：', '').replace(' ', '')
