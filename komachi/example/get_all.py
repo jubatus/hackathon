@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import json
 from komachi import parse_titles, parse_contents, parse_titles_in_group, GROUPS
 
