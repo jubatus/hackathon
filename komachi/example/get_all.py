@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-
 import json
-from komachi import parse_titles, parse_contents
+from komachi import parse_titles, parse_contents, parse_titles_in_group, GROUPS
 
+path = "all.json"
+f = open(path, 'w')
 
-result = dict()
-titles = parse_titles()
-for group_name, titles in titles.items():
-    result[group_name] = []
+for group_id, group_name in GROUPS.items():
+    titles = parse_titles_in_group(group_id)
     for title in titles:
         url = title['link']
-        ret = parse_contents(url)
-        if ret is not None:
-            result[group_name].append(ret)
+        contents = parse_contents(url)
+        if contents is not None:
+            f.write(json.dumps(contents, ensure_ascii=False))
+            f.write('\n')
 
-with open('all.json', 'w') as outfile:
-    json.dump(result, outfile, indent=4, ensure_ascii=False)
+f.close()
