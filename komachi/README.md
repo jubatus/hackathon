@@ -80,18 +80,31 @@ with open('contents.json', 'w') as f:
 ### ジャンル配下の投稿リストを取得する
 
 以下のスクリプトを実行することにより、指定したジャンル配下にある投稿リストをすべて取得することができます。
+出力ファイル(`contents_**.json`)の各行にjson形式で投稿が記載されます。
 
 
-```python:get_contents_list.py
+```python:get_contents_in_group.py
+
+# -*- coding: utf-8 -*-
 
 import json
-from komachi import parse_titles_in_group
+from komachi import parse_titles_in_group, parse_contents
 
-group_id = '00' 
-contents_list = parse_titles_in_group(group_id)
+group_id = '00' # GROUP ID は一覧から指定してください
 
-with open('contents.json', 'w') as f:
-    json.dump(contents_list, f, indent=4, ensure_ascii=False)
+path = 'contents_{}.json'.format(group_id)
+f = open(path, 'w')
+
+result = []
+titles = parse_titles_in_group(group_id)
+for title in titles:
+    url = title['link']
+    contents = parse_contents(url)
+    if contents is not None:
+        f.write(json.dumps(contents, ensure_ascii=False))
+        f.write('\n')
+
+f.close()
 ```
 
 ```json:contents_list.json
@@ -116,24 +129,29 @@ with open('contents.json', 'w') as f:
 ### 取得可能なすべての投稿を取得する
 
 以下のスクリプトを実行することにより、掲載中のすべての投稿、およびその内容を取得することができます。
+出力ファイル(`all.json`)の各行にjson形式で投稿が記載されます。
+ダウンロードに時間がかかるのでご注意ください。
 
 ``` python:get_all.py
 
+# -*- coding: utf-8 -*-
 import json
-from komachi import parse_titles, parse_contents
+from komachi import parse_titles, parse_contents, parse_titles_in_group, GROUPS
 
-result = dict()
-titles = parse_titles()
-for group_name, titles in titles.items():
-    result[group_name] = []
+path = "all.json"
+f = open(path, 'w')
+
+for group_id, group_name in GROUPS.items():
+    titles = parse_titles_in_group(group_id)
     for title in titles:
         url = title['link']
-        ret = parse_contents(url)
-        if ret is not None:
-            result[group_name].append(ret)
+        contents = parse_contents(url)
+        if contents is not None:
+            f.write(json.dumps(contents, ensure_ascii=False))
+            f.write('\n')
 
-with open('all.json', 'w') as outfile:
-    json.dump(result, outfile, indent=4, ensure_ascii=False)
+f.close()
+
 
 ```
 
