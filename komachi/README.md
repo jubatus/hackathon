@@ -87,6 +87,35 @@ with open('{}.json'.format(name), 'w') as f:
 }
 ```
 
+### ジャンル配下のタイトルリストを取得する
+
+以下のスクリプトを実行することにより、指定したジャンル配下にあるタイトルリストをすべて取得することができます。
+出力ファイル(`title_list_**.json`)の各行にjson形式で投稿が記載されます。
+第一引数にジャンルコードを入力してください。
+
+``` 
+$ python get_title_list.py 00
+```
+
+```json:title_list_**.json
+[
+    {
+        "link": "http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=**",
+        "title": "TITLE",	        # 投稿のタイトル
+        "n_response": "0",          # レス数
+        "n_favorite": "1",          # お気に入り数
+        "date": "8月18日 22:57",     # 投稿日・時間
+        "rank": "761",              # アクセスランキング（ランク外は-1)
+        "group": "全ジャンル一覧"      # ジャンル名
+    },
+    {
+        "link": "http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=**",
+        ...
+    },
+    ...
+]
+```
+
 ### ジャンル配下の投稿リストを取得する
 
 以下のスクリプトを実行することにより、指定したジャンル配下にある投稿リストをすべて取得することができます。
@@ -119,24 +148,6 @@ for title in titles:
 f.close()
 ```
 
-```json:contents_list.json
-[
-    {
-        "link": "http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=**",
-        "title": "TITLE",	        # 投稿のタイトル
-        "n_response": "0",          # レス数
-        "n_favorite": "1",          # お気に入り数
-        "date": "8月18日 22:57",     # 投稿日・時間
-        "rank": "761",              # アクセスランキング（ランク外は-1)
-        "group": "全ジャンル一覧"      # ジャンル名
-    },
-    {
-        "link": "http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=**",
-        ...
-    },
-    ...
-]
-```
 
 ### 取得可能なすべての投稿を取得する
 
