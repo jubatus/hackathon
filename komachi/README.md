@@ -45,16 +45,26 @@ $ python setup.py install
 ### 特定の投稿の内容を取得する
 
 以下のスクリプトを実行することにより、URLで指定した特定の投稿を取得することができます。
+第一引数にURLを、第二引数にファイル名（任意）を入力してください。
+
+```
+$ python get_contents.py http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=** sample
+```
 
 ```python:get_contents.py
 
+import sys
 import json
 from komachi import parse_contents
 
-url = 'http://komachi.yomiuri.co.jp/t/2016/mmdd/******.htm?g=**' 
+url = sys.argv[1]
 contents = parse_contents(url)
+if len(sys.argv) == 2:
+    name = contents['topic_id']
+else:
+    name = sys.argv[2]
 
-with open('contents.json', 'w') as f:
+with open('{}.json'.format(name), 'w') as f:
     json.dump(contents, f, indent=4, ensure_ascii=False)
 
 ```
@@ -81,16 +91,18 @@ with open('contents.json', 'w') as f:
 
 以下のスクリプトを実行することにより、指定したジャンル配下にある投稿リストをすべて取得することができます。
 出力ファイル(`contents_**.json`)の各行にjson形式で投稿が記載されます。
+第一引数にジャンルコードを入力してください。
 
+```
+$ python get_contents_in_group.py 00
+```
 
-```python:get_contents_in_group.py
-
-# -*- coding: utf-8 -*-
-
+```
+import sys
 import json
 from komachi import parse_titles_in_group, parse_contents
 
-group_id = '00' # GROUP ID は一覧から指定してください
+group_id = sys.argv[1]
 
 path = 'contents_{}.json'.format(group_id)
 f = open(path, 'w')

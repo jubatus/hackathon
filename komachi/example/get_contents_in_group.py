@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-
+import sys
 import json
 from komachi import parse_titles_in_group, parse_contents
 
-group_id = '00'
+group_id = sys.argv[1]
 
 path = 'contents_{}.json'.format(group_id)
 f = open(path, 'w')

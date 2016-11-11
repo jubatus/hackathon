@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import json
 from komachi import parse_contents
 
-# please edit 
-url = 'http://komachi.yomiuri.co.jp/t/2016/1025/782664.htm?g=06'
+url = sys.argv[1]
 contents = parse_contents(url)
+if len(sys.argv) == 2:
+    name = contents['topic_id']
+else:
+    name = sys.argv[2]
 
-with open('contents.json', 'w') as f:
+with open('{}.json'.format(name), 'w') as f:
     json.dump(contents, f, indent=4, ensure_ascii=False)
