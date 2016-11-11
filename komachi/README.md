@@ -178,6 +178,22 @@ f.close()
 
 ```
 
+## Jubakitを使った分析例
+
+Jubakitを使って類似記事のレコメンドをしてみます。
+
+1. Jubakit をインストールします
+
+    ``` $ pip install jubakit ```
+
+2. 発言小町データをダウンロードします
+
+    ``` $ python get_contents_in_group.py 00 ```
+
+3. Jubakitを使って分析します
+
+    ``` $ python jubakit_example.py contents_00.json ```
+
 ## LICENSE
 
 MIT License
