@@ -118,10 +118,16 @@ def parse_contents(url):
         result['n_response'] = soup.find('div', class_='hm').text.replace('レス数：', '').replace('本', '')
         result['responses'] = []
         reslist = soup.find('table', class_='reslist').find_all('div', class_='inr')
-        for response in reslist:
+        resdates = soup.find('table', class_='reslist').find_all('td', class_='date')
+        restitles = soup.find('table', class_='reslist').find_all('td', class_='hd')
+        resposters = soup.find('table', class_='reslist').find_all('td', class_='poster')
+        for (response, resdate, restitle, resposter) in zip(reslist, resdates, restitles, resposters):
             res = dict()
             res['res_userid'] = response.find('div', class_='uid-r').text.replace('ユーザーID：', '')
             res['res_message'] = response.find('p').text.replace('\n', '').replace('\r', '')
+            res['res_date'] = resdate.text
+            res['res_title'] = restitle.find('a').text
+            res['res_username'] = resposter.find('div').text
             result['responses'].append(res)
         vote_url = 'http://komachi.yomiuri.co.jp/servlet/GetVoteResult?topic={}&rescategory=1.2.3.4.5'.format(topic_id)
         vote_soup = BeautifulSoup(__html(vote_url), 'lxml')
