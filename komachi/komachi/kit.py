@@ -8,11 +8,11 @@ from jubakit.loader.core import LineBasedFileLoader
 
 class KomachiLoader(LineBasedFileLoader):
 
-    def __init__(self, f, *args, include_responses=False, include_votes=False, **kwargs):
+    def __init__(self, f, *args, **kwargs):
+        self._include_response = kwargs.pop('include_responses', False)  # レスを含めるか否か
+        self._include_votes = kwargs.pop('include_votes', False)         # 得票数を含めるか否か
         super(KomachiLoader, self).__init__(f, *args, **kwargs)
-        self._include_response = include_responses  # レスを含めるか否か
-        self._include_votes = include_votes         # 得票数を含めるか否か
-
+            
     def preprocess(self, ent):
         contents = json.loads(ent['line'])
 
