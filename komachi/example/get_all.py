@@ -6,6 +6,7 @@ path = "all.json"
 f = open(path, 'w')
 
 for group_id, group_name in GROUPS.items():
+    if group_id == '00': continue
     titles = parse_titles_in_group(group_id)
     for title in titles:
         url = title['link']
