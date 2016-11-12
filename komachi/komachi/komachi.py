@@ -16,16 +16,16 @@ BASE_URL = 'http://komachi.yomiuri.co.jp'
 GROUPS = {
     '00': '全ジャンル一覧',
     '01': '生活・身近な話題',
-    '02': '恋愛・結婚・離婚',
-    '03': '妊娠・出産・育児',
-    '04': 'キャリア・職場',
-    '05': '家族・友人・人間関係',
-    '06': '心や体の悩み',
+    '04': '恋愛・結婚・離婚',
+    '05': '妊娠・出産・育児',
+    '02': 'キャリア・職場',
+    '06': '家族・友人・人間関係',
+    '03': '心や体の悩み',
     '07': '美容・ファッション・ダイエット',
     '08': '趣味・教育・教養',
     '09': '旅行・国内外の地域情報',
-    '10': '男性から発信するトピ',
-    '11': '編集部からのトピ',
+    '11': '男性から発信するトピ',
+    '10': '編集部からのトピ',
     '15': '弁護士に相談するトピ'
 }
 
@@ -39,10 +39,31 @@ def __html(url):
         return urllib2.urlopen(url).read()
 
 
+def parse_title_urls(url):
+    print(url)
+
+
+def parse_titles_in_day(year, month, day):
+    url = '{0}/d/?d={1:02d}{2:02d}{3:02d}'.format(BASE_URL, year, month, day)
+    soup = BeautifulSoup(__html(url), 'lxml')
+    topics_list = soup.find('table', class_='topicslist').find_all('tr')[1:]
+    print(topics_list)
+    result = []
+    for topics in topics_list:
+        ret = dict()
+        ret['title'] = topics.find('td', class_='hd').find('a').text.replace('\r\n', '')
+        ret['link'] = BASE_URL + topics.find('td', class_='hd').find('a').get('href')
+        ret['n_response'] = topics.find('td', class_='res').text
+        ret['n_favorite'] = topics.find('td', class_=re.compile('fav*')).text
+        ret['date'] = topics.find('td', class_='date').text
+        result.append(ret)
+    return result
+
 def parse_title_page(group_id, page_id):
     url = '{0}?g={1}&o=0&p={2}'.format(BASE_URL, group_id, page_id)
     soup = BeautifulSoup(__html(url), 'lxml')
     topics_list = soup.find('table', class_='topicslist').find_all('tr')[1:]
+    print(topics_list)
     result = []
     for topics in topics_list:
         ret = dict()
@@ -67,6 +88,7 @@ def parse_titles_in_group(group_id):
         print('get titles at page {0}/{1}'.format(i+1, len(PAGE_IDS)))
         result.extend(ret)
     return result
+
 
 
 def parse_titles():
