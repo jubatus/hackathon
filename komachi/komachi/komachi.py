@@ -95,6 +95,7 @@ def parse_titles():
 
 
 def parse_contents(url):
+    url = url.split('?g=')[0] + '?o=0&p=0'
     try:
         soup = BeautifulSoup(__html(url), 'lxml')
         for e in soup.findAll('br'):
