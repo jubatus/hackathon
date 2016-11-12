@@ -39,15 +39,10 @@ def __html(url):
         return urllib2.urlopen(url).read()
 
 
-def parse_title_urls(url):
-    print(url)
-
-
-def parse_titles_in_day(year, month, day):
-    url = '{0}/d/?d={1:02d}{2:02d}{3:02d}'.format(BASE_URL, year, month, day)
+def parse_titles_in_day(year, month, day, page_id=1):
+    url = '{0}/d/?d={1:02d}{2:02d}{3:02d}?&p={4}'.format(BASE_URL, year, month, day, page_id)
     soup = BeautifulSoup(__html(url), 'lxml')
     topics_list = soup.find('table', class_='topicslist').find_all('tr')[1:]
-    print(topics_list)
     result = []
     for topics in topics_list:
         ret = dict()
@@ -63,7 +58,6 @@ def parse_title_page(group_id, page_id):
     url = '{0}?g={1}&o=0&p={2}'.format(BASE_URL, group_id, page_id)
     soup = BeautifulSoup(__html(url), 'lxml')
     topics_list = soup.find('table', class_='topicslist').find_all('tr')[1:]
-    print(topics_list)
     result = []
     for topics in topics_list:
         ret = dict()
