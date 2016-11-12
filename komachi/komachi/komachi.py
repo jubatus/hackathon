@@ -40,7 +40,7 @@ def __html(url):
 
 
 def parse_titles_in_day(year, month, day, page_id=1):
-    url = '{0}/d/?d={1:02d}{2:02d}{3:02d}&p={4}'.format(BASE_URL, year, month, day, page_id)
+    url = '{0}/d/?d={1:04d}{2:02d}{3:02d}&p={4}'.format(BASE_URL, year, month, day, page_id)
     soup = BeautifulSoup(__html(url), 'lxml')
     topics_list = soup.find('table', class_='topicslist').find_all('tr')[1:]
     result = []
